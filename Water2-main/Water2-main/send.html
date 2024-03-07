@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Send Data</title>
+</head>
+<body>
+  <button onclick="startSending()">Start Sending Data</button>
+  <button onclick="stopSending()">Stop Sending Data</button>
+
+  <script>
+    let ws;
+    let sendingInterval;
+
+    function startSending() {
+      ws = new WebSocket("ws://waterserver-vsqt.onrender.com/ws/sensor/sensor3/");
+
+      // Start sending data every 6 seconds (10 times per minute)
+      sendingInterval = setInterval(sendRandomData, 1000);
+    }
+
+    function stopSending() {
+      // Close the WebSocket connection and clear the sending interval
+      ws.close();
+      clearInterval(sendingInterval);
+    }
+
+    function sendRandomData() {
+      let temp = Math.floor(Math.random() * 100); // Random temperature between 0 and 100
+      let tds = Math.floor(Math.random() * 1000); // Random TDS between 0 and 1000
+      let doValue = Math.floor(Math.random() * 10); // Random DO between 0 and 10
+      let cond = Math.floor(Math.random() * 10000); // Random conductivity between 0 and 10000
+
+      let data = {
+        "temp": temp,
+        "tds": tds,
+        "do": doValue,
+        "cond": cond
+      };
+
+      ws.send(JSON.stringify(data));
+    }
+  </script>
+</body>
+</html>
